@@ -66,7 +66,8 @@
 			"title = '" . addslashes($_POST['modifyTitle']) . "'",
 			"text = '" . addslashes($_POST['modifyReview']) . "'",
 			"image = '" . $_POST['modifyImageUrl'] . "'",
-			"score = " . $_POST['modifyScore']
+			"score = " . $_POST['modifyScore'],
+			"category = " . $_POST['modifyCategory']
 		);
 		
 		$sql = sprintf(
@@ -85,11 +86,12 @@
 	if (isset($_POST['create']))
 	{			
 		$sql = sprintf(
-					"INSERT INTO review (title, text, image, score) values ('%s', '%s', '%s', %s)",
+					"INSERT INTO review (title, text, image, score, category) values ('%s', '%s', '%s', %s, %s)",
 					addslashes($_POST['title']),
 					trim(preg_replace('/\s+/', ' ', str_replace('"', '&quot;', str_replace('\'', '\\\'', $_POST['review'])))),
 					$_POST['imageUrl'],
-					$_POST['score']
+					$_POST['score'],
+					$_POST['category']
 			);
 		if ($conn->query($sql) === TRUE) {
 			echo "New record created successfully";
@@ -110,6 +112,13 @@
 			<label for='score'>Score</label>
 			<input type='number' step='0.5' name='score' id='score'>
 			<label for='review'>Review<br/> <textarea name='review' form='create' rows='5'></textarea></label>
+			<label for='category'>Category</label>
+			<select name='category'>
+			";
+			foreach($categories as $key=>$value) {
+				echo "<option value='" . $key . "'>" . $value . "</option>";
+			}
+			echo "</select><br/>
 			<input type='submit' name='create' value='Create'>
 			</form>
 			<style>
@@ -127,11 +136,11 @@
 		</style>
 	</p>";
 	
-	$sql = "SELECT id, title, text, image, score FROM review WHERE hidden=0 order by 1 desc";
+	$sql = "SELECT id, title, text, image, score, category FROM review WHERE hidden=0 order by 1 desc";
 	$result = $conn->query($sql);
 			if ($result->num_rows > 0) {
 				// output data of each row
-				echo "<p><h3>Modify existing title</h3><table><tr><th>Edit</th><th>Title</th><th>Text</th><th>Image</th><th>score</th></tr>";
+				echo "<p><h3>Modify existing title</h3><table><tr><th>Edit</th><th>Title</th><th>Text</th><th>Image</th><th>Score</th><th>Category</th></tr>";
 				echo "<form method='post' id='deleteRow'><input type='number' hidden='true' name='deleteId' id='deleteId'/></form>";
 				echo "<script>
 						function deleteId() {
@@ -152,6 +161,8 @@
 							document.getElementById('modifyReview').value = arguments[4];
 							document.getElementById('modifyReview').disabled = false;
 							document.getElementById('modifyButton').disabled = false;
+							document.getElementById('modifyCategory').value = arguments[5];
+							document.getElementById('modifyCategory').disabled = false;
 						}
 				</script>";
 				while($row = $result->fetch_assoc()) {
@@ -168,7 +179,8 @@
 							. "', '" . $row['image'] 
 							. "', " . $row['score'] 
 							. ", '" . trim(preg_replace('/\s+/', ' ', str_replace('"', '&quot;', str_replace('\'', '\\\'', $row['text']))))
-							. "')\"></input>" .
+							. "', " . $row['category'] 
+							. ")\"></input>" .
 					"</td>" .
 						"<td>" . $row['title'] . "</td>" .
 						"<td>" . $text . "</td>" . 
@@ -176,6 +188,7 @@
 							"<img style='height:20px;' src='assets/images/notfound.png'/></object>" 
 							. $image . "</td>" .
 						"<td>" . $row['score'] . "</td>" .
+						"<td>" . $categories[$row['category']] . "</td>" .
 					"</tr>";
 				}
 				echo "</table></p>";
@@ -187,9 +200,16 @@
 						<input type='text' name='modifyImageUrl' id='modifyImageUrl' disabled>
 						<label for='modifyScore'>Score</label>
 						<input type='number' step='0.5' name='modifyScore' id='modifyScore' disabled>
-							<label for='modifyReview'>Review<br/>
-									<textarea rows='5' name='modifyReview' id='modifyReview' form='modifyRow' disabled></textarea>
-							</label>
+						<label for='modifyReview'>Review<br/>
+							<textarea rows='5' name='modifyReview' id='modifyReview' form='modifyRow' disabled></textarea>
+						</label>
+						<label for='modifyCategory'>Category</label>						
+						<select name='modifyCategory' id='modifyCategory' disabled>
+						";
+						foreach($categories as $key=>$value) {
+							echo "<option value='" . $key . "'>" . $value . "</option>";
+						}
+						echo "</select>
 						<input type='number' hidden='true' name='modifyId' id='modifyId'/>
 						<input type='submit' name='modify' id='modifyButton' value='Modify' disabled>
 					</form>";

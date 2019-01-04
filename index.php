@@ -14,10 +14,15 @@
   <link rel="stylesheet" href="assets/mobirise/css/style.css">
   <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
   
-  
+<?php include 'config.php' ?>
+<?php
+	function get($var, $default=null) {
+	  return isset($_GET[$var]) ? $_GET[$var] : $default;
+	}
+	$category = htmlspecialchars(get("cat", "1"));
+?>
   
 </head>
-<body>
 <section class="mbr-navbar mbr-navbar--freeze mbr-navbar--absolute mbr-navbar--sticky mbr-navbar--auto-collapse" id="ext_menu-m" data-rv-view="119">
     <div class="mbr-navbar__section mbr-section">
         <div class="mbr-section__container container">
@@ -28,17 +33,32 @@
                         <span class="mbr-brand__name"><a class="mbr-brand__name text-white" href="/">경 REVIEWS</a></span>
                     </span>
                 </div>
-<!--
-                <div class="mbr-navbar__hamburger mbr-hamburger"><span class="mbr-hamburger__line"></span></div>
+
+                <div class="mbr-navbar__hamburger mbr-hamburger text-white"><span class="mbr-hamburger__line"></span></div>
                 <div class="mbr-navbar__column mbr-navbar__menu">
                     <nav class="mbr-navbar__menu-box mbr-navbar__menu-box--inline-right">
                         <div class="mbr-navbar__column">
-                            <ul class="mbr-navbar__items mbr-navbar__items--right float-left mbr-buttons mbr-buttons--freeze mbr-buttons--right btn-decorator mbr-buttons--active"><li class="mbr-navbar__item"><a class="mbr-buttons__link btn text-white" href="/">MOVIES</a></li><li class="mbr-navbar__item"><a class="mbr-buttons__link btn text-white" href="/">FOOD</a></li><li class="mbr-navbar__item"><a class="mbr-buttons__link btn text-white" href="/">COFFEE</a></li></ul>                            
-                            <ul class="mbr-navbar__items mbr-navbar__items--right mbr-buttons mbr-buttons--freeze mbr-buttons--right btn-inverse mbr-buttons--active"><li class="mbr-navbar__item"><a class="mbr-buttons__btn btn btn-link" href="/">CITIES</a></li></ul>
+                            <ul class="mbr-navbar__items mbr-navbar__items--right float-left mbr-buttons mbr-buttons--freeze mbr-buttons--right btn-decorator btn-inverse mbr-buttons--active">
+							<?php 
+							
+							$classSelected = 'class="mbr-buttons__link btn text-white btn-default"';
+							$classNotSelected = 'class="mbr-buttons__link btn text-white"';
+							
+							foreach($categories as $key=>$value) {
+								echo '<li class="mbr-navbar__item"><a ';
+								if ($category == $key) {
+									echo $classSelected;
+								} else {
+									echo $classNotSelected;
+								}
+								echo 'href="index.php?cat=' . $key . '">' . $value . '</a></li>';
+							} ?>
+							</ul>                                
                         </div>
                     </nav>
                 </div>
--->
+                            <!--<ul class="mbr-navbar__items mbr-navbar__items--right            mbr-buttons mbr-buttons--freeze mbr-buttons--right btn-inverse mbr-buttons--active"><li class="mbr-navbar__item"><a class="mbr-buttons__btn btn btn-link" href="/">CITIES</a></li></ul>-->
+
             </div>
         </div>
     </div>
@@ -49,10 +69,11 @@
     
     <div class="mbr-section__container container mbr-section__container--std-top-padding" style="padding-top: 93px;">
         <div class="mbr-section__row row">
+		<body>
+		
 		<?php include 'config.php' ?>
 		<?php
-			
-			$sql = "SELECT id, title, text, image, score FROM review WHERE hidden=0 order by 1 desc";
+			$sql = "SELECT id, title, text, image, score FROM review WHERE hidden=0 AND category =" . $category . " order by 1 desc";
 			$result = $conn->query($sql);
 			
 			if ($result->num_rows > 0) {
