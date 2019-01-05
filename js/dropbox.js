@@ -48,7 +48,7 @@ function drop(e) {
 
 // *********** Upload file to Cloudinary ******************** //
 function uploadFile(file) {
-  var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+  var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload/`;
   var xhr = new XMLHttpRequest();
   var fd = new FormData();
   xhr.open('POST', url, true);
@@ -87,6 +87,7 @@ function uploadFile(file) {
   fd.append('upload_preset', unsignedUploadPreset);
   fd.append('tags', 'browser_upload'); // Optional - add tag for image admin in Cloudinary
   fd.append('file', file);
+  fd.append('angle', 'ignore');
   xhr.send(fd);
 }
 
