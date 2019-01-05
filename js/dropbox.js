@@ -74,13 +74,13 @@ function uploadFile(file) {
       var url = response.secure_url;
 
       // Create a thumbnail of the uploaded image, with 150px width
-  //    var tokens = url.split('/');
-    //  tokens.splice(-2, 0, 'w_150,c_scale');
-      //var img = new Image(); // HTML5 Constructor
-    //  img.src = tokens.join('/');
-     // img.alt = response.public_id;
-      document.getElementById('modifyImageUrl').value = url;
-	  document.getElementById('createImageUrl').value = url;
+      var tokens = url.split('/');
+      tokens.splice(-3, 0, 'a_exif');
+      var img = new Image(); // HTML5 Constructor
+      img.src = tokens.join('/');
+      img.alt = response.public_id;
+      document.getElementById('modifyImageUrl').value = img.src;
+	  document.getElementById('createImageUrl').value = img.src;
     }
   };
 
