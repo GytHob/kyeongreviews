@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html >
+<html>
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,12 +7,11 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   <meta name="description" content="">
-  <title>경 REVIEWS AdminXS</title>
+  <title>경s REVIEW Admin</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:700,400&subset=cyrillic,latin,greek,vietnamese">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/mobirise/css/style.css">
   <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
-  
   
   
 </head>
@@ -28,17 +26,6 @@
                         <span class="mbr-brand__name"><a class="mbr-brand__name text-white" href="/">경 REVIEWS</a></span>
                     </span>
                 </div>
-<!--
-                <div class="mbr-navbar__hamburger mbr-hamburger"><span class="mbr-hamburger__line"></span></div>
-                <div class="mbr-navbar__column mbr-navbar__menu">
-                    <nav class="mbr-navbar__menu-box mbr-navbar__menu-box--inline-right">
-                        <div class="mbr-navbar__column">
-                            <ul class="mbr-navbar__items mbr-navbar__items--right float-left mbr-buttons mbr-buttons--freeze mbr-buttons--right btn-decorator mbr-buttons--active"><li class="mbr-navbar__item"><a class="mbr-buttons__link btn text-white" href="/">MOVIES</a></li><li class="mbr-navbar__item"><a class="mbr-buttons__link btn text-white" href="/">FOOD</a></li><li class="mbr-navbar__item"><a class="mbr-buttons__link btn text-white" href="/">COFFEE</a></li></ul>                            
-                            <ul class="mbr-navbar__items mbr-navbar__items--right mbr-buttons mbr-buttons--freeze mbr-buttons--right btn-inverse mbr-buttons--active"><li class="mbr-navbar__item"><a class="mbr-buttons__btn btn btn-link" href="/">CITIES</a></li></ul>
-                        </div>
-                    </nav>
-                </div>
--->
             </div>
         </div>
     </div>
@@ -49,6 +36,13 @@
     
     <div class="mbr-section__container container mbr-section__container--std-top-padding" style="padding: 93px 10px 10px 10px;">
 	<?php include 'config.php' ?>
+	
+	<?php 
+	  $cloudinaryUrl = getenv('CLOUDINARY_URL');
+	  $cloud = explode("@", $cloudinaryUrl)[1];
+	  ?>
+
+	
 	<?php
 	if (isset($_POST['deleteId'])) {
 		$sql = sprintf(
@@ -104,11 +98,13 @@
 	?>
         <div class="mbr-section__row row">
 		<?php
-			echo "<h3>Add new title</h3><p><form method='post' id='create'>
+			echo "<h3>Add new title</h3><p><form method='post' id='create' class='createForm'>
 			<label for='title'>Title</label>
 			<input type='text' name='title' id='title'>
 			<label for='imageUrl'>Image URL</label>
-			<input type='text' name='imageUrl' id='imageUrl'>
+			<input type='file' id='fileElem' accept='image/*' style='display:none' onchange='handleFiles(this.files)'>
+			<input type='button' href='#' id='fileSelect' value='Upload image'></button>
+			<input type='text' name='imageUrl' id='createImageUrl'>
 			<label for='score'>Score</label>
 			<input type='number' step='0.5' name='score' id='score'>
 			<label for='review'>Review<br/> <textarea name='review' form='create' rows='5'></textarea></label>
@@ -118,7 +114,7 @@
 			foreach($categories as $key=>$value) {
 				echo "<option value='" . $key . "'>" . $value . "</option>";
 			}
-			echo "</select><br/>
+			echo "</select>
 			<input type='submit' name='create' value='Create'>
 			</form>
 			<style>
@@ -197,6 +193,8 @@
 						<label for='modifyTitle'>Title</label>
 						<input type='text' name='modifyTitle' id='modifyTitle' disabled>
 						<label for='modifyImageUrl'>Image URL</label>
+						<input type='file' id='fileElem2' accept='image/*' style='display:none' onchange='handleFiles(this.files)'>
+						<input type='button' href='#' id='fileSelect2' value='Upload image'></button>
 						<input type='text' name='modifyImageUrl' id='modifyImageUrl' disabled>
 						<label for='modifyScore'>Score</label>
 						<input type='number' step='0.5' name='modifyScore' id='modifyScore' disabled>
@@ -221,11 +219,17 @@
         </div>
     </div>
 </section>
-
+  
+<div id="dropbox"/>
+  
+</body>
+<script type="text/javascript"> 
+	const cloudName = '<?php echo $cloud;?>';
+	const unsignedUploadPreset = 'tuiqdzta';
+</script>
   <script src="assets/web/assets/jquery/jquery.min.js"></script>
   <script src="assets/bootstrap/js/bootstrap.min.js"></script>
   <script src="assets/smooth-scroll/smooth-scroll.js"></script>
   <script src="assets/mobirise/js/script.js"></script>
-  
-</body>
+  <script type="text/javascript" src="js/dropbox.js"></script>
 </html>
